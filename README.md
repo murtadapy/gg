@@ -1,2 +1,1 @@
-# gg
-Git to Go
+# GG (Git to Go)
