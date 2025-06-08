@@ -1,20 +1,29 @@
+import os
+import sys
 import argparse
 from typing import Callable
 
 from gg.commands import InitiateCommand
+from gg.commands import StatusCommand
 from gg.logger import Logger
 
 
+PATH = os.path.join(sys.path[0], ".gg")
 LOGGER = Logger()
 
 
 def _init(_: argparse.Namespace) -> None:
-    InitiateCommand(LOGGER).execute()
+    InitiateCommand(PATH, LOGGER).execute()
+
+
+def _status(_: argparse.Namespace) -> None:
+    StatusCommand(PATH, LOGGER).execute()
 
 
 def _run_command(args: argparse.Namespace) -> None:
     commands: dict[str, Callable[[argparse.Namespace], None]] = {
-        "init": _init
+        "init": _init,
+        "status": _status,
     }
 
     commands[args.command](args)
@@ -45,8 +54,11 @@ def parse() -> None:
 
     subparsers = parser.add_subparsers(dest="command", required=True)
 
-    init = subparsers.add_parser('init', help="Initiate gg repostiroy")
+    init = subparsers.add_parser("init", help="Initiate gg repostiroy")
     add_generic_arguments(init)
+
+    status = subparsers.add_parser("status", help="Status of repostiroy")
+    add_generic_arguments(status)
 
     args = parser.parse_args()
     _setup_logger(args)

@@ -8,9 +8,8 @@ from gg.logger import Logger
 
 
 class InitiateCommand(CommandBase):
-    def __init__(self, logger: Logger) -> None:
-        super().__init__(logger=logger)
-        self.path = os.path.join(sys.path[0], ".gg")
+    def __init__(self, path: str, logger: Logger) -> None:
+        super().__init__(path=path, logger=logger)
 
     def _create_database(self) -> None:
         Database.create_database(self.path)
