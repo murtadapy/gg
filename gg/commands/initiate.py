@@ -5,5 +5,5 @@ class InitiateCommand(CommandBase):
     def __init__(self) -> None:
         ...
 
-    def initiate(self) -> None:
+    def execute(self) -> None:
         ...

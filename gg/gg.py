@@ -1,4 +1,18 @@
 import argparse
+from typing import Callable
+
+from gg.commands import InitiateCommand
+
+
+def _init(args: argparse.Namespace) -> None:
+    InitiateCommand().execute()
+
+
+def _map_command(args: argparse.Namespace) -> None:
+    commands: dict[str, Callable[[argparse.Namespace], None]] = {
+        "init": _init
+    }
+    commands[args.command](args)
 
 
 def parse() -> None:
@@ -8,7 +22,8 @@ def parse() -> None:
 
     subparsers.add_parser('init', help="Initiate gg repostiroy")
 
-    parser.parse_args()
+    args = parser.parse_args()
+    _map_command(args)
 
 
 def run() -> None:

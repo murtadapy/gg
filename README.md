@@ -1,1 +1,1 @@
-# GG (Good to Git)
+# GG (Good to Go)
