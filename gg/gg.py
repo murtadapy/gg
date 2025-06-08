@@ -2,7 +2,7 @@ import argparse
 
 
 def parse() -> None:
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(description="GG: Good to Git")
 
     subparsers = parser.add_subparsers(dest="command", required=True)
 
