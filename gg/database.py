@@ -19,7 +19,7 @@ class Database:
 
     def create_sprint(self,
                       sprint_name: str,
-                      base_commit_id: int | None) -> None:
+                      base_commit_id: int | None = None) -> None:
         with self._get_connection() as connection:
             connection.execute("""
                                INSERT INTO SPRINT(NAME, BASE_COMMIT_ID)

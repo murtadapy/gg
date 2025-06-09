@@ -20,6 +20,9 @@ class InitiateCommand(CommandBase):
         if sys.platform == "win32":
             ctypes.windll.kernel32.SetFileAttributesW(self.path, 0x02)
 
+    def _create_main_branch(self) -> None:
+        self.database.create_sprint(sprint_name="main")
+
     def execute(self) -> None:
         self.logger.pulse("Executing initate command")
 
@@ -28,5 +31,8 @@ class InitiateCommand(CommandBase):
 
         self._create_database()
         self.logger.pulse("Created database")
+
+        self._create_main_branch()
+        self.logger.pulse("Created main branch")
 
         self.logger.info(f"Initialized empty gg repository in {self.path}")
