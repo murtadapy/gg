@@ -1,66 +1,15 @@
 import os
 import sqlite3
-
-
-DATABASE = "gg.db"
-
-
-TEMPLATE = """
-    PRAGMA foreign_keys = ON;
-
-    CREATE TABLE IF NOT EXISTS blobs (
-        id TEXT PRIMARY KEY,
-        content BLOB NOT NULL
-    );
-
-    CREATE TABLE IF NOT EXISTS commits (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        uniqueId TEXT NOT NULL,
-        authorEmail TEXT NOT NULL,
-        authorName TEXT NOT NULL,
-        date TEXT NOT NULL,
-        parentCommitId INTEGER,
-        FOREIGN KEY(parentCommitId) REFERENCES commits(id)
-    );
-
-    CREATE TABLE IF NOT EXISTS commit_blobs (
-        commitId INTEGER NOT NULL,
-        blobId TEXT NOT NULL,
-        path TEXT NOT NULL,
-        PRIMARY KEY (commitId, path),
-        FOREIGN KEY(commitId) REFERENCES commits(id),
-        FOREIGN KEY(blobId) REFERENCES blobs(id)
-    ) WITHOUT ROWID;
-
-    CREATE TABLE IF NOT EXISTS sprints (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT UNIQUE NOT NULL,
-        baseCommitId INTEGER,
-        FOREIGN KEY(baseCommitId) REFERENCES commits(id)
-    );
-
-    CREATE TABLE IF NOT EXISTS sprint_blobs (
-        sprintId INTEGER NOT NULL,
-        blobId TEXT NOT NULL,
-        path TEXT NOT NULL,
-        PRIMARY KEY (sprintId, path),
-        FOREIGN KEY(sprintId) REFERENCES sprints(id),
-        FOREIGN KEY(blobId) REFERENCES blobs(id)
-    ) WITHOUT ROWID;
-"""
+import importlib.resources as resources
 
 
 class Database:
-    @staticmethod
-    def create_database(path: str) -> None:
-        path = os.path.join(path, DATABASE)
-        with sqlite3.connect(path) as connection:
-            connection.executescript(TEMPLATE)
-            connection.commit()
+    def __init__(self, path: str) -> None:
+        self.path = path
+        self.database = os.path.join(path, "gg.db")
 
-    @staticmethod
-    def get_connection(path: str) -> sqlite3.Connection:
-        path = os.path.join(path, DATABASE)
-        connection = sqlite3.connect(path)
-        connection.execute("PRAGMA foreign_keys = ON")
-        return connection
+    def create_database(self) -> None:
+        with sqlite3.connect(self.database) as connection:
+            with resources.open_text("gg", "database.sql") as sql:
+                connection.executescript(sql.read())
+            connection.commit()
