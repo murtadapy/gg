@@ -9,11 +9,6 @@ from gg.database import Database
 from gg.logger import Logger
 
 
-PATH = os.path.join(sys.path[0], ".gg")
-DATABASE = Database(PATH)
-LOGGER = Logger()
-
-
 class GG:
     def __init__(self) -> None:
         self.path = os.path.join(sys.path[0], ".gg")
@@ -36,10 +31,10 @@ class GG:
 
     def _setup_logger(self, args: argparse.Namespace) -> None:
         if args.q:
-            LOGGER.suppress()
+            self.logger.suppress()
 
         if args.v:
-            LOGGER.verbose()
+            self.logger.verbose()
 
     def add_generic_arguments(self, suparser: argparse.ArgumentParser) -> None:
         suparser.add_argument("-q",
