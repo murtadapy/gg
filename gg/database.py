@@ -5,8 +5,7 @@ import importlib.resources as resources
 
 class Database:
     def __init__(self, path: str) -> None:
-        self.path = path
-        self.database = os.path.join(path, "gg.db")
+        self.database = os.path.join(path, ".gg", "gg.db")
 
     def _get_connection(self) -> sqlite3.Connection:
         return sqlite3.connect(self.database)

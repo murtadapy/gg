@@ -20,10 +20,10 @@ class InitiateCommand(CommandBase):
                          logger=logger)
 
     def _create_repostiory(self) -> None:
-        os.makedirs(self.path)
+        os.makedirs(self.gg_path)
 
         if sys.platform == "win32":
-            ctypes.windll.kernel32.SetFileAttributesW(self.path, 0x02)
+            ctypes.windll.kernel32.SetFileAttributesW(self.gg_path, 0x02)
 
     def _create_database(self) -> None:
         self.database.create_database()
@@ -36,7 +36,8 @@ class InitiateCommand(CommandBase):
 
         self.logger.pulse("Checking if repository exists")
         if self.file_manager.check_if_repository_exists():
-            self.logger.info(f"The repository is already exist in {self.path}")
+            self.logger.info("The repository is "
+                             f"already exist in {self.gg_path}")
             return
 
         self.logger.pulse("Creating repository folder")
@@ -51,4 +52,4 @@ class InitiateCommand(CommandBase):
         self._create_main_sprint()
         self.logger.pulse("Created main sprint successfully")
 
-        self.logger.info(f"Initialized empty gg repository in {self.path}")
+        self.logger.info(f"Initialized empty gg repository in {self.gg_path}")

@@ -1,4 +1,3 @@
-import os
 import sys
 import argparse
 from typing import Callable
@@ -12,7 +11,7 @@ from gg.logger import Logger
 
 class GG:
     def __init__(self) -> None:
-        self.path = os.path.join(sys.path[0], ".gg")
+        self.path = sys.path[0]
         self.database = Database(self.path)
         self.file_manager = FileManager(self.path)
         self.logger = Logger()
