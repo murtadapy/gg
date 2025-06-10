@@ -4,15 +4,20 @@ import ctypes
 
 from gg.base import CommandBase
 from gg.database import Database
+from gg.file_manager import FileManager
 from gg.logger import Logger
 
 
 class InitiateCommand(CommandBase):
-    def __init__(self, path: str, database: Database, logger: Logger) -> None:
-        super().__init__(path=path, database=database, logger=logger)
-
-    def _check_if_exist(self) -> bool:
-        return os.path.exists(self.path)
+    def __init__(self,
+                 path: str,
+                 database: Database,
+                 file_manager: FileManager,
+                 logger: Logger) -> None:
+        super().__init__(path=path,
+                         database=database,
+                         file_manager=file_manager,
+                         logger=logger)
 
     def _create_repostiory(self) -> None:
         os.makedirs(self.path)
@@ -30,7 +35,7 @@ class InitiateCommand(CommandBase):
         self.logger.pulse("Executing initate command")
 
         self.logger.pulse("Checking if repository exists")
-        if self._check_if_exist():
+        if self.file_manager.check_if_repository_exists():
             self.logger.info(f"The repository is already exist in {self.path}")
             return
 

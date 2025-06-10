@@ -5,6 +5,7 @@ from typing import Callable
 
 from gg.commands import InitiateCommand
 from gg.commands import StatusCommand
+from gg.file_manager import FileManager
 from gg.database import Database
 from gg.logger import Logger
 
@@ -13,13 +14,20 @@ class GG:
     def __init__(self) -> None:
         self.path = os.path.join(sys.path[0], ".gg")
         self.database = Database(self.path)
+        self.file_manager = FileManager(self.path)
         self.logger = Logger()
 
     def _init(self, _: argparse.Namespace) -> None:
-        InitiateCommand(self.path, self.database, self.logger).execute()
+        InitiateCommand(self.path,
+                        self.database,
+                        self.file_manager,
+                        self.logger).execute()
 
     def _status(self, _: argparse.Namespace) -> None:
-        StatusCommand(self.path, self.database, self.logger).execute()
+        StatusCommand(self.path,
+                      self.database,
+                      self.file_manager,
+                      self.logger).execute()
 
     def _run_command(self, args: argparse.Namespace) -> None:
         commands: dict[str, Callable[[argparse.Namespace], None]] = {
