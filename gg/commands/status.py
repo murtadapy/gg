@@ -26,18 +26,6 @@ class StatusCommand(CommandBase):
             self.logger.info("This is not a gg repository")
             return
 
-        files = self.file_manager.get_all_files()
-        current_sprint = self.database.get_current_sprint()
-        last_commit = self.database.get_last_commit(sprint_name=current_sprint)
-
-        blobs = self.database.get_commit_blobs(commit_id=last_commit)
-
-        while blobs:
-            blob = blobs.pop()
-
-            for file in files:
-                ...
-
         # Get all blobs of current sprint by doing the following:
         # Get all blobs in the tree of the repository
         # Get current sprint last commit id

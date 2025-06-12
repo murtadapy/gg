@@ -15,7 +15,9 @@ class GG:
         self.path = sys.path[0]
         self.database = Database(self.path)
         self.file_manager = FileManager(self.path)
-        self.blob_manager = BlobManager(self.path)
+        self.blob_manager = BlobManager(self.path,
+                                        self.file_manager,
+                                        self.database,)
         self.logger = Logger()
 
     def _init(self, _: argparse.Namespace) -> None:
