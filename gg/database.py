@@ -105,8 +105,8 @@ class Database:
             return commit_blobs
 
     def get_sprint(self,
-                   sprint_id: int | None,
-                   sprint_name: str | None) -> Sprint:
+                   sprint_id: int | None = -1,
+                   sprint_name: str | None = "") -> Sprint:
         with self._get_connection() as connection:
             cursor = connection.execute("""
                                SELECT ID, NAME, BASE_COMMIT_ID,
