@@ -2,6 +2,8 @@ from typing import List
 from typing import Set
 
 import os
+import sys
+import pathlib
 import hashlib
 
 
@@ -34,5 +36,8 @@ class FileManager:
             dirs[:] = [x for x in dirs if x not in ignored_entities]
             for file in files:
                 if file not in ignored_entities:
-                    all_files.append(os.path.join(root, file))
+                    root_path = sys.path[0]
+                    file_path = pathlib.Path(os.path.join(root, file))
+                    relative_path = file_path.relative_to(root_path).as_posix()
+                    all_files.append(relative_path)
         return all_files
