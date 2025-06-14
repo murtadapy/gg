@@ -45,7 +45,9 @@ class Database:
                         content=record[1],
                         sha256=record[2])
 
-    def get_commit(self, id: int | None, unique_id: int | None) -> Commit:
+    def get_commit(self,
+                   id: int | None = -1,
+                   unique_id: str | None = "") -> Commit:
         with self._get_connection() as connection:
             cursor = connection.execute("""
                                         SELECT ID, UNQIUE_ID, AUTHOR_EMAIL
@@ -106,7 +108,7 @@ class Database:
 
     def get_sprint(self,
                    sprint_id: int | None = -1,
-                   sprint_name: str | None = "") -> Sprint:
+                   sprint_name: str | None = "") -> Sprint | None:
         with self._get_connection() as connection:
             cursor = connection.execute("""
                                SELECT ID, NAME, BASE_COMMIT_ID,
@@ -115,10 +117,12 @@ class Database:
                                WHERE ID=? OR NAME=?
                                """, (sprint_id, sprint_name))
             record = cursor.fetchone()
-            return Sprint(id=record[0],
-                          name=record[1],
-                          base_commit_id=record[2],
-                          last_commit_id=record[3])
+            if record:
+                return Sprint(id=record[0],
+                              name=record[1],
+                              base_commit_id=record[2],
+                              last_commit_id=record[3])
+            return None
 
     def create_sprint(self,
                       sprint_name: str,

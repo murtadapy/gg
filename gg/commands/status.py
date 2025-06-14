@@ -25,3 +25,9 @@ class StatusCommand(CommandBase):
         if not self.file_manager.check_if_repository_exists():
             self.logger.info("This is not a gg repository")
             return
+
+        self.logger.pulse("Getting blobs status")
+        blob_status = self.blob_manager.get_blobs_status()
+        self.logger.pulse("Got blobs status")
+
+        print(blob_status.created)

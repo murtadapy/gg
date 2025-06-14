@@ -1,6 +1,7 @@
 from typing import List
 
 from dataclasses import dataclass
+from dataclasses import field
 from datetime import datetime
 
 
@@ -38,6 +39,7 @@ class Commit:
 
 @dataclass
 class BlobStatus:
-    modified: List[str]
-    deleted: List[str]
-    unchanged: List[str]
+    created: List[str] = field(default_factory=list)
+    modified: List[str] = field(default_factory=list)
+    deleted: List[str] = field(default_factory=list)
+    unchanged: List[str] = field(default_factory=list)
