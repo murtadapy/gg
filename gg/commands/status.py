@@ -30,4 +30,21 @@ class StatusCommand(CommandBase):
         blob_status = self.blob_manager.get_blobs_status()
         self.logger.pulse("Got blobs status")
 
-        print(blob_status.created)
+        self.logger.pulse("Creating the response message")
+        message = f"On sprint {self.database.get_active_sprint()}\n"
+
+        if (not blob_status.created and not blob_status.modified
+                and not blob_status.deleted):
+            message += "No Changes have been made"
+        else:
+            for blob in blob_status.created:
+                message += f"\tCreated: {blob}\n"
+
+            for blob in blob_status.modified:
+                message += f"\tModified: {blob}\n"
+
+            for blob in blob_status.deleted:
+                message += f"\tDeleted: {blob}\n"
+
+        self.logger.pulse("Created the response message")
+        self.logger.info(message)

@@ -47,21 +47,24 @@ class Database:
 
     def get_commit(self,
                    id: int | None = -1,
-                   unique_id: str | None = "") -> Commit:
+                   unique_id: str | None = "") -> Commit | None:
         with self._get_connection() as connection:
             cursor = connection.execute("""
-                                        SELECT ID, UNQIUE_ID, AUTHOR_EMAIL
+                                        SELECT ID, UNIQUE_ID, AUTHOR_EMAIL
                                         AUTHOR_NAME, DATE, PARENT_COMMIT_ID
-                                        FROM COMMIT
-                                        WHERE ID=? OR UNQIUE_ID=?
+                                        FROM `COMMIT`
+                                        WHERE ID=? OR UNIQUE_ID=?
                                         """, (id, unique_id))
             record = cursor.fetchone()
-            return Commit(id=record[0],
-                          unique_id=record[1],
-                          author_email=record[2],
-                          author_name=record[3],
-                          date=record[4],
-                          parent_commit_id=record[5])
+
+            if record:
+                return Commit(id=record[0],
+                              unique_id=record[1],
+                              author_email=record[2],
+                              author_name=record[3],
+                              date=record[4],
+                              parent_commit_id=record[5])
+            return None
 
     def create_commit(self,
                       id: int,
@@ -95,7 +98,7 @@ class Database:
             cursor = connection.execute("""
                                         SELECT COMMIT_ID, BLOB_ID, PATH
                                         FROM COMMIT_BLOB
-                                        WHERE COMMIT_ID=?)""",
+                                        WHERE COMMIT_ID=?""",
                                         (commit_id,))
 
             commit_blobs: List[CommitBlob] = []
