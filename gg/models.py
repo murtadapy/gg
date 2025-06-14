@@ -1,3 +1,5 @@
+from typing import List
+
 from dataclasses import dataclass
 from datetime import datetime
 
@@ -32,3 +34,10 @@ class Commit:
     author_name: str
     date: datetime
     parent_commit_id: int
+
+
+@dataclass
+class BlobStatus:
+    modified: List[str]
+    deleted: List[str]
+    unchanged: List[str]
