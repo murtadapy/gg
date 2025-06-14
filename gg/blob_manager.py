@@ -22,14 +22,17 @@ class BlobManager:
         if sprint:
             blobs = self.database.get_commit_blobs(
                 commit_id=sprint.last_commit_id)
+
             commit = self.database.get_commit(id=sprint.id)
+
             while blobs and files:
                 if files and not blobs:
-                    blobs = self.database.get_commit_blobs(
-                        commit_id=commit.parent_commit_id)
+                    if commit:
+                        blobs = self.database.get_commit_blobs(
+                            commit_id=commit.parent_commit_id)
 
-                    commit = self.database.get_commit(
-                        id=commit.parent_commit_id)
+                        commit = self.database.get_commit(
+                            id=commit.parent_commit_id)
 
                 blob_commit = blobs.pop()
                 path = blob_commit.path
