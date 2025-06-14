@@ -24,8 +24,10 @@ class BlobManager:
         while blobs:
             blob = blobs.pop()
 
-            for file in files:
-                ...
+            blob.path not in files  # means we are deleting it
+            # if blob is not found recursively, means it is a new file
+            # if blob is found but with differnet SHA-256 means it is modified
+            # otherwise, means no changes
 
         return []
 
