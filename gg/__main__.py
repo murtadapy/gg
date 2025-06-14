@@ -1,5 +1,10 @@
 from gg.gg import GG
 
-if __name__ == "__main__":
+
+def main():
     gg = GG()
     gg.run()
+
+
+if __name__ == "__main__":
+    main()
