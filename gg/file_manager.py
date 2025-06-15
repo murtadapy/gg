@@ -17,11 +17,13 @@ class FileManager:
         return os.path.exists(self.gg_path)
 
     def get_ignored_entities(self) -> Set[str]:
+        ignored_enitites: Set[str] = set({".gg"})
         ggignore_path = os.path.join(self.tree_path, ".ggignore")
         if os.path.exists(ggignore_path):
             with open(os.path.join(self.tree_path, ".ggignore")) as f:
-                return {x.strip("\n") for x in f.readlines()}
-        return set()
+                for line in f.readlines():
+                    ignored_enitites.add(line.strip("\n"))
+        return ignored_enitites
 
     def get_sha256(self, path: str) -> str:
         sha256_hash = hashlib.sha256()
