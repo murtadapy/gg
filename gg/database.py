@@ -30,7 +30,7 @@ class Database:
         with self._get_connection() as connection:
             cursor = connection.execute("""
                                         INSERT INTO BLOB(CONTENT, SHA256)
-                                        VALUES(?, ?, ?)
+                                        VALUES(?, ?)
                                         """, (content, sha256))
             connection.commit()
             return cursor.lastrowid
@@ -40,7 +40,7 @@ class Database:
             cursor = connection.execute("""
                                         SELECT ID, CONTENT, SHA256
                                         FROM BLOB
-                                        WHERE ID=?)""",
+                                        WHERE ID=?""",
                                         (blob_id,))
 
             record = cursor.fetchone()
@@ -69,13 +69,13 @@ class Database:
                    unique_id: str | None = "") -> Commit | None:
         with self._get_connection() as connection:
             cursor = connection.execute("""
-                                        SELECT ID, UNIQUE_ID, AUTHOR_EMAIL
+                                        SELECT ID, UNIQUE_ID, AUTHOR_EMAIL,
                                         AUTHOR_NAME, DATE, PARENT_COMMIT_ID
                                         FROM `COMMIT`
                                         WHERE ID=? OR UNIQUE_ID=?
                                         """, (id, unique_id))
-            record = cursor.fetchone()
 
+            record = cursor.fetchone()
             if record:
                 return Commit(id=record[0],
                               unique_id=record[1],
@@ -93,7 +93,7 @@ class Database:
                       parent_commit_id: int) -> int | None:
         with self._get_connection() as connection:
             cursor = connection.execute("""
-                                        INSERT INTO COMMIT(UNIQUE_ID,
+                                        INSERT INTO `COMMIT`(UNIQUE_ID,
                                         AUTHOR_EMAIL,AUTHOR_NAME, DATE,
                                         PARENT_COMMIT_ID)
                                         VALUES(?, ?, ?, ?, ?)""",
@@ -167,7 +167,7 @@ class Database:
             connection.execute("""
                                UPDATE SPRINT
                                SET LAST_COMMIT_ID=?
-                               WHERE SPRINT_NAME=?
+                               WHERE NAME=?
                                """, (last_commit_id, sprint_name))
             connection.commit()
 
@@ -185,5 +185,6 @@ class Database:
             connection.execute("""
                                UPDATE CONFIG
                                SET CONFIG_VALUE=?
-                               WHERE CONFIG_KEY='?'""",
-                               (key, value,))
+                               WHERE CONFIG_KEY=?""",
+                               (value, key,))
+            connection.commit()

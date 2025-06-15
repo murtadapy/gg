@@ -31,7 +31,7 @@ class InitiateCommand(CommandBase):
 
     def _create_main_sprint(self) -> None:
         self.database.create_sprint(sprint_name="main")
-        self.database.update_active_sprint(sprint_name="main")
+        self.database.update_value("CURRENT_SPRINT", "main")
 
     def execute(self) -> None:
         self.logger.pulse("Executing initate command")

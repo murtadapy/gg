@@ -18,12 +18,26 @@ class BlobManager:
         sprint = self.database.get_sprint(sprint_name=current_sprint)
 
         if sprint:
-            blobs = self.database.get_commit_blobs(
-                commit_id=sprint.last_commit_id)
+            commit = self.database.get_commit(id=sprint.last_commit_id)
 
-            commit = self.database.get_commit(id=sprint.id)
+            if commit:
+                blobs = self.database.get_commit_blobs(commit_id=commit.id)
 
             while blobs and files:
+                blob_commit = blobs.pop()
+                path = blob_commit.path
+                if path in files:
+                    blob = self.database.get_blob(blob_commit.blob_id)
+                    if blob:
+                        if blob.sha256 != self.file_manager.get_sha256(path):
+                            blobs_status.modified.append(path)
+                        else:
+                            blobs_status.unchanged.append(path)
+                else:
+                    blobs_status.deleted.append(blob_commit.path)
+
+                files.remove(path)
+
                 if files and not blobs:
                     if commit:
                         blobs = self.database.get_commit_blobs(
@@ -31,19 +45,6 @@ class BlobManager:
 
                         commit = self.database.get_commit(
                             id=commit.parent_commit_id)
-
-                blob_commit = blobs.pop()
-                path = blob_commit.path
-                if path in files:
-                    blob = self.database.get_blob(blob_commit.blob_id)
-                    if blob.sha256 != self.file_manager.get_sha256(path):
-                        blobs_status.modified.append(path)
-                    else:
-                        blobs_status.unchanged.append(path)
-                else:
-                    blobs_status.deleted.append(blob_commit.path)
-
-                files.remove(path)
 
         for file in files:
             blobs_status.created.append(file)

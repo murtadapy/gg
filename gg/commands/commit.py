@@ -27,8 +27,8 @@ class CommitCommand(CommandBase):
         sprint = self.database.get_sprint(sprint_name=current_sprint)
         self.logger.pulse("Got the current spint")
 
-        self.logger.pulse("Creating the commit")
         if sprint:
+            self.logger.pulse("Creating the commit")
             unique_id = uuid4().hex
             author_email = self.database.get_value("AUTHOR_EMAIL")
             author_name = self.database.get_value("AUTHOR_NAME")
