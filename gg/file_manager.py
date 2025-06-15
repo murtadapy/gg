@@ -2,15 +2,16 @@ from typing import List
 from typing import Set
 
 import os
-import sys
 import pathlib
 import hashlib
 
+from gg.path import Path
+
 
 class FileManager:
-    def __init__(self, path: str) -> None:
-        self.tree_path = path
-        self.gg_path = os.path.join(path, ".gg")
+    def __init__(self) -> None:
+        self.tree_path = Path.get_root_path()
+        self.gg_path = os.path.join(self.tree_path, ".gg")
 
     def check_if_repository_exists(self) -> bool:
         return os.path.exists(self.gg_path)
@@ -36,8 +37,7 @@ class FileManager:
             dirs[:] = [x for x in dirs if x not in ignored_entities]
             for file in files:
                 if file not in ignored_entities:
-                    root_path = sys.path[0]
                     file_path = pathlib.Path(os.path.join(root, file))
-                    relative_path = file_path.relative_to(root_path).as_posix()
-                    all_files.append(relative_path)
+                    relative_path = file_path.relative_to(self.tree_path)
+                    all_files.append(relative_path.as_posix())
         return all_files

@@ -1,14 +1,12 @@
 from gg.database import Database
 from gg.file_manager import FileManager
 from gg.models import BlobStatus
+from gg.path import Path
 
 
 class BlobManager:
-    def __init__(self,
-                 tree_path: str,
-                 file_manager: FileManager,
-                 database: Database) -> None:
-        self.tree_path = tree_path
+    def __init__(self, file_manager: FileManager, database: Database) -> None:
+        self.tree_path = Path.get_root_path()
         self.file_manager = file_manager
         self.database = database
 

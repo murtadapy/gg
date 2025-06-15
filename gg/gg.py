@@ -1,4 +1,3 @@
-import sys
 import argparse
 from typing import Callable
 
@@ -12,24 +11,19 @@ from gg.logger import Logger
 
 class GG:
     def __init__(self) -> None:
-        self.path = sys.path[0]
-        self.database = Database(self.path)
-        self.file_manager = FileManager(self.path)
-        self.blob_manager = BlobManager(self.path,
-                                        self.file_manager,
-                                        self.database,)
+        self.database = Database()
+        self.file_manager = FileManager()
+        self.blob_manager = BlobManager(self.file_manager, self.database)
         self.logger = Logger()
 
     def _init(self, _: argparse.Namespace) -> None:
-        InitiateCommand(self.path,
-                        self.database,
+        InitiateCommand(self.database,
                         self.file_manager,
                         self.blob_manager,
                         self.logger).execute()
 
     def _status(self, _: argparse.Namespace) -> None:
-        StatusCommand(self.path,
-                      self.database,
+        StatusCommand(self.database,
                       self.file_manager,
                       self.blob_manager,
                       self.logger).execute()

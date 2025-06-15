@@ -1,3 +1,6 @@
 *pyc
 .ggignore
 .gg
+*egg-info
+build/*
+venv

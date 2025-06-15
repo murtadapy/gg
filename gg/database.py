@@ -9,10 +9,12 @@ from gg.models import Blob
 from gg.models import CommitBlob
 from gg.models import Sprint
 from gg.models import Commit
+from gg.path import Path
 
 
 class Database:
-    def __init__(self, path: str) -> None:
+    def __init__(self) -> None:
+        path = Path.get_root_path()
         self.database = os.path.join(path, ".gg", "gg.db")
 
     def _get_connection(self) -> sqlite3.Connection:
