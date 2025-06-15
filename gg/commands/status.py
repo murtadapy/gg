@@ -29,7 +29,8 @@ class StatusCommand(CommandBase):
         self.logger.pulse("Got blobs status")
 
         self.logger.pulse("Creating the response message")
-        message = f"On sprint {self.database.get_active_sprint()}\n"
+        current_sprint = self.database.get_value("CURRENT_SPRINT")
+        message = f"On sprint {current_sprint}\n"
 
         if (not blob_status.created and not blob_status.modified
                 and not blob_status.deleted):

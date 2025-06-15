@@ -26,15 +26,16 @@ class Database:
                 connection.executescript(sql.read())
             connection.commit()
 
-    def create_blob(self, id: int, content: bytes, sha256: str) -> None:
+    def create_blob(self, content: bytes, sha256: str) -> int | None:
         with self._get_connection() as connection:
-            connection.execute("""
-                               INSERT INTO BLOB(ID, CONTENT, SHA256)
-                               VALUES(?, ?, ?)
-                               """, (id, content, sha256))
+            cursor = connection.execute("""
+                                        INSERT INTO BLOB(CONTENT, SHA256)
+                                        VALUES(?, ?, ?)
+                                        """, (content, sha256))
             connection.commit()
+            return cursor.lastrowid
 
-    def get_blob(self, blob_id: int) -> Blob:
+    def get_blob(self, blob_id: int) -> Blob | None:
         with self._get_connection() as connection:
             cursor = connection.execute("""
                                         SELECT ID, CONTENT, SHA256
@@ -43,9 +44,25 @@ class Database:
                                         (blob_id,))
 
             record = cursor.fetchone()
-            return Blob(id=record[0],
-                        content=record[1],
-                        sha256=record[2])
+            if record:
+                return Blob(id=record[0],
+                            content=record[1],
+                            sha256=record[2])
+            return None
+
+    def get_blob_by_sha256(self, sha256: str) -> Blob | None:
+        with self._get_connection() as connection:
+            cursor = connection.execute("""
+                                        SELECT ID, CONTENT, SHA256
+                                        FROM BLOB
+                                        WHERE SHA256=?""",
+                                        (sha256,))
+            record = cursor.fetchone()
+            if record:
+                return Blob(id=record[0],
+                            content=record[1],
+                            sha256=record[2])
+            return None
 
     def get_commit(self,
                    id: int | None = -1,
@@ -69,24 +86,25 @@ class Database:
             return None
 
     def create_commit(self,
-                      id: int,
                       unique_id: str,
                       author_email: str,
                       author_name: str,
                       date: datetime,
-                      parent_commit_id: int) -> None:
+                      parent_commit_id: int) -> int | None:
         with self._get_connection() as connection:
-            connection.execute("""
-                               INSERT INTO COMMIT(ID, UNIQUE_ID, AUTHOR_EMAIL,
-                                           AUTHOR_NAME, DATE, PARENT_COMMIT_ID)
-                               VALUES(?, ?, ?, ?, ?, ?)""",
-                               (id, unique_id, author_email,
-                                author_name, date, parent_commit_id))
+            cursor = connection.execute("""
+                                        INSERT INTO COMMIT(UNIQUE_ID,
+                                        AUTHOR_EMAIL,AUTHOR_NAME, DATE,
+                                        PARENT_COMMIT_ID)
+                                        VALUES(?, ?, ?, ?, ?)""",
+                                        (unique_id, author_email,
+                                         author_name, date, parent_commit_id))
             connection.commit()
+            return cursor.lastrowid
 
     def create_commit_blob(self,
                            commit_id: int,
-                           blob_id: str,
+                           blob_id: int | None,
                            path: str) -> None:
         with self._get_connection() as connection:
             connection.execute("""
@@ -142,18 +160,30 @@ class Database:
                                                      base_commit_id))
             connection.commit()
 
-    def get_active_sprint(self) -> str:
+    def update_sprint(self,
+                      sprint_name: str,
+                      last_commit_id: int) -> None:
+        with self._get_connection() as connection:
+            connection.execute("""
+                               UPDATE SPRINT
+                               SET LAST_COMMIT_ID=?
+                               WHERE SPRINT_NAME=?
+                               """, (last_commit_id, sprint_name))
+            connection.commit()
+
+    def get_value(self, key: str) -> str:
         with self._get_connection() as connection:
             cursor = connection.execute("""
                                         SELECT CONFIG_VALUE
                                         FROM CONFIG
-                                        WHERE CONFIG_KEY='CURRENT_SPRINT'""")
+                                        WHERE CONFIG_KEY=?""",
+                                        (key,))
             return cursor.fetchone()[0]
 
-    def update_active_sprint(self, sprint_name: str) -> None:
+    def update_value(self, key: str, value: str) -> None:
         with self._get_connection() as connection:
             connection.execute("""
                                UPDATE CONFIG
                                SET CONFIG_VALUE=?
-                               WHERE CONFIG_KEY='CURRENT_SPRINT'""",
-                               (sprint_name,))
+                               WHERE CONFIG_KEY='?'""",
+                               (key, value,))

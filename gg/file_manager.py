@@ -4,6 +4,9 @@ from typing import Set
 import os
 import pathlib
 import hashlib
+import io
+import gzip
+
 
 from gg.path import Path
 
@@ -43,3 +46,13 @@ class FileManager:
                     relative_path = file_path.relative_to(self.tree_path)
                     all_files.append(relative_path.as_posix())
         return all_files
+
+    def compress_blob(self, path: str) -> bytes:
+        with open(path, 'rb') as file:
+            out = io.BytesIO()
+            with gzip.GzipFile(fileobj=out, mode="wb") as zip:
+                zip.write(file.read())
+            return out.getvalue()
+
+    def get_absolute_path(self, relative_path: str) -> str:
+        return os.path.join(self.tree_path, relative_path)

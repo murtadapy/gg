@@ -3,6 +3,9 @@ from typing import Callable
 
 from gg.commands import InitiateCommand
 from gg.commands import StatusCommand
+from gg.commands import SprintCommand
+from gg.commands import CommitCommand
+from gg.commands import ConfigCommand
 from gg.file_manager import FileManager
 from gg.blob_manager import BlobManager
 from gg.database import Database
@@ -28,10 +31,34 @@ class GG:
                       self.blob_manager,
                       self.logger).execute()
 
+    def _commit(self, args: argparse.Namespace) -> None:
+        CommitCommand(self.database,
+                      self.file_manager,
+                      self.blob_manager,
+                      self.logger).execute()
+
+    def _sprint(self, args: argparse.Namespace) -> None:
+        SprintCommand(self.database,
+                      self.file_manager,
+                      self.blob_manager,
+                      self.logger,
+                      args.n).execute()
+
+    def _config(self, args: argparse.Namespace) -> None:
+        ConfigCommand(self.database,
+                      self.file_manager,
+                      self.blob_manager,
+                      self.logger,
+                      args.key,
+                      args.value).execute()
+
     def _run_command(self, args: argparse.Namespace) -> None:
         commands: dict[str, Callable[[argparse.Namespace], None]] = {
             "init": self._init,
             "status": self._status,
+            "sprint": self._sprint,
+            "commit": self._commit,
+            "config": self._config,
         }
 
         commands[args.command](args)
@@ -64,6 +91,19 @@ class GG:
 
         status = subparsers.add_parser("status", help="Status of repostiroy")
         self.add_generic_arguments(status)
+
+        commit = subparsers.add_parser("commit", help="Commit changes")
+        self.add_generic_arguments(commit)
+
+        config = subparsers.add_parser("config", help="Change Config Values")
+        config.add_argument("--key",
+                            help="Config Key",
+                            required=True)
+
+        config.add_argument("--value",
+                            help="Config Value",
+                            required=True)
+        self.add_generic_arguments(config)
 
         args = parser.parse_args()
         self._setup_logger(args)

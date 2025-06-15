@@ -14,7 +14,7 @@ class BlobManager:
         blobs_status = BlobStatus()
 
         files = self.file_manager.get_all_files()
-        current_sprint = self.database.get_active_sprint()
+        current_sprint = self.database.get_value(key="CURRENT_SPRINT")
         sprint = self.database.get_sprint(sprint_name=current_sprint)
 
         if sprint:
