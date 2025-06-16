@@ -22,6 +22,11 @@ class CommitCommand(CommandBase):
     def execute(self) -> None:
         self.logger.pulse("Executing commit command")
 
+        self.logger.pulse("Checking if repository exist")
+        if not self.file_manager.check_if_repository_exists():
+            self.logger.info("This is not a gg repository")
+            return
+
         self.logger.pulse("Getting current sprint")
         current_sprint = self.database.get_value(key="CURRENT_SPRINT")
         sprint = self.database.get_sprint(sprint_name=current_sprint)

@@ -6,6 +6,7 @@ from gg.commands import StatusCommand
 from gg.commands import SprintCommand
 from gg.commands import CommitCommand
 from gg.commands import ConfigCommand
+from gg.commands import SwitchCommand
 from gg.file_manager import FileManager
 from gg.blob_manager import BlobManager
 from gg.database import Database
@@ -31,7 +32,7 @@ class GG:
                       self.blob_manager,
                       self.logger).execute()
 
-    def _commit(self, args: argparse.Namespace) -> None:
+    def _commit(self, _: argparse.Namespace) -> None:
         CommitCommand(self.database,
                       self.file_manager,
                       self.blob_manager,
@@ -39,6 +40,13 @@ class GG:
 
     def _sprint(self, args: argparse.Namespace) -> None:
         SprintCommand(self.database,
+                      self.file_manager,
+                      self.blob_manager,
+                      self.logger,
+                      args.n).execute()
+
+    def _switch(self, args: argparse.Namespace) -> None:
+        SwitchCommand(self.database,
                       self.file_manager,
                       self.blob_manager,
                       self.logger,
@@ -59,6 +67,7 @@ class GG:
             "sprint": self._sprint,
             "commit": self._commit,
             "config": self._config,
+            "switch": self._switch,
         }
 
         commands[args.command](args)
@@ -100,6 +109,12 @@ class GG:
                             help="Sprint name",
                             required=True)
         self.add_generic_arguments(sprint)
+
+        switch = subparsers.add_parser("switch", help="Switching to sprint")
+        switch.add_argument("-n",
+                            help="sprint name",
+                            required=True)
+        self.add_generic_arguments(switch)
 
         config = subparsers.add_parser("config", help="Change Config Values")
         config.add_argument("--key",

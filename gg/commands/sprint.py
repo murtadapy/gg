@@ -1,4 +1,3 @@
-
 from gg.base import CommandBase
 from gg.database import Database
 from gg.file_manager import FileManager
@@ -20,7 +19,12 @@ class SprintCommand(CommandBase):
         self.sprint_name = sprint_name
 
     def execute(self) -> None:
-        self.logger.pulse("Executing Sprint command")
+        self.logger.pulse("Executing sprint command")
+
+        self.logger.pulse("Checking if repository exist")
+        if not self.file_manager.check_if_repository_exists():
+            self.logger.info("This is not a gg repository")
+            return
 
         self.logger.pulse("Get current sprint")
         sprint_name = self.database.get_value("CURRENT_SPRINT")

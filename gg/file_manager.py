@@ -4,6 +4,7 @@ from typing import Set
 import os
 import pathlib
 import hashlib
+import shutil
 import io
 import gzip
 
@@ -54,5 +55,21 @@ class FileManager:
                 zip.write(file.read())
             return out.getvalue()
 
+    def decompress_blob(self, content: bytes) -> str:
+        with gzip.GzipFile(fileobj=io.BytesIO(content), mode="rb") as zip:
+            return zip.read().decode("utf-8")
+
     def get_absolute_path(self, relative_path: str) -> str:
         return os.path.join(self.tree_path, relative_path)
+
+    def delete_all_tree(self) -> None:
+        for entity in os.listdir(self.tree_path):
+            if entity not in self.get_ignored_entities():
+                path = os.path.join(self.tree_path, entity)
+                if os.path.isfile(path):
+                    os.remove(path)
+                else:
+                    shutil.rmtree(os.path.join(self.tree_path, entity))
+
+    def create_all_folders(self, path) -> None:
+        os.makedirs(os.path.dirname(path), exist_ok=True)

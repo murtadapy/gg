@@ -24,6 +24,11 @@ class ConfigCommand(CommandBase):
     def execute(self) -> None:
         self.logger.pulse("Executing config command")
 
+        self.logger.pulse("Checking if repository exist")
+        if not self.file_manager.check_if_repository_exists():
+            self.logger.info("This is not a gg repository")
+            return
+
         self.logger.pulse("Updating config value")
         self.database.update_value(key=self.config_key,
                                    value=self.config_value)
