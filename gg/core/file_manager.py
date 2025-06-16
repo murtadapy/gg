@@ -9,7 +9,7 @@ import io
 import gzip
 
 
-from gg.path import Path
+from gg.core.path import Path
 
 
 class FileManager:

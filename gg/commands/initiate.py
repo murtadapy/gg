@@ -3,10 +3,10 @@ import os
 import ctypes
 
 from gg.base import CommandBase
-from gg.database import Database
-from gg.file_manager import FileManager
-from gg.blob_manager import BlobManager
-from gg.logger import Logger
+from gg.core.database import Database
+from gg.core.file_manager import FileManager
+from gg.core.blob_manager import BlobManager
+from gg.core.logger import Logger
 
 
 class InitiateCommand(CommandBase):
@@ -30,7 +30,8 @@ class InitiateCommand(CommandBase):
         self.database.create_database()
 
     def _create_main_sprint(self) -> None:
-        self.database.create_sprint(sprint_name="main")
+        self.database.create_sprint(sprint_name="main",
+                                    base_commit_id=0)
         self.database.update_value("CURRENT_SPRINT", "main")
 
     def execute(self) -> None:

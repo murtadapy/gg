@@ -8,10 +8,10 @@ from gg.commands import CommitCommand
 from gg.commands import ConfigCommand
 from gg.commands import SwitchCommand
 from gg.commands import MergeCommand
-from gg.file_manager import FileManager
-from gg.blob_manager import BlobManager
-from gg.database import Database
-from gg.logger import Logger
+from gg.core.file_manager import FileManager
+from gg.core.blob_manager import BlobManager
+from gg.core.database import Database
+from gg.core.logger import Logger
 
 
 class GG:

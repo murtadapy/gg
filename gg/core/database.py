@@ -5,11 +5,11 @@ import sqlite3
 import importlib.resources as resources
 from datetime import datetime
 
-from gg.models import Blob
-from gg.models import CommitBlob
-from gg.models import Sprint
-from gg.models import Commit
-from gg.path import Path
+from gg.core.models import Blob
+from gg.core.models import CommitBlob
+from gg.core.models import Sprint
+from gg.core.models import Commit
+from gg.core.path import Path
 
 
 class Database:

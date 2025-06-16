@@ -1,7 +1,7 @@
-from gg.database import Database
-from gg.file_manager import FileManager
-from gg.models import BlobStatus
-from gg.path import Path
+from gg.core.database import Database
+from gg.core.file_manager import FileManager
+from gg.core.models import BlobStatus
+from gg.core.path import Path
 
 
 class BlobManager:

@@ -2,11 +2,11 @@ import os
 from abc import ABC
 from abc import abstractmethod
 
-from gg.database import Database
-from gg.file_manager import FileManager
-from gg.blob_manager import BlobManager
-from gg.path import Path
-from gg.logger import Logger
+from gg.core.database import Database
+from gg.core.file_manager import FileManager
+from gg.core.blob_manager import BlobManager
+from gg.core.path import Path
+from gg.core.logger import Logger
 
 
 class CommandBase(ABC):
