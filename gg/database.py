@@ -147,6 +147,23 @@ class Database:
                               last_commit_id=record[3])
             return None
 
+    def get_sprint_by_base_commit(self, base_commit_id: int) -> Sprint | None:
+
+        with self._get_connection() as connection:
+            cursor = connection.execute("""
+                               SELECT ID, NAME, BASE_COMMIT_ID,
+                               LAST_COMMIT_ID
+                               FROM SPRINT
+                               WHERE LAST_COMMIT_ID=?
+                               """, (base_commit_id,))
+            record = cursor.fetchone()
+            if record:
+                return Sprint(id=record[0],
+                              name=record[1],
+                              base_commit_id=record[2],
+                              last_commit_id=record[3])
+            return None
+
     def create_sprint(self,
                       sprint_name: str,
                       base_commit_id: int | None = None) -> None:

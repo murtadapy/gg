@@ -4,6 +4,7 @@ from .sprint import SprintCommand
 from .commit import CommitCommand
 from .config import ConfigCommand
 from .switch import SwitchCommand
+from .merge import MergeCommand
 
 __all__ = [
     "InitiateCommand",
@@ -12,4 +13,5 @@ __all__ = [
     "CommitCommand",
     "ConfigCommand",
     "SwitchCommand",
+    "MergeCommand",
 ]

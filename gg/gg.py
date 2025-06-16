@@ -7,6 +7,7 @@ from gg.commands import SprintCommand
 from gg.commands import CommitCommand
 from gg.commands import ConfigCommand
 from gg.commands import SwitchCommand
+from gg.commands import MergeCommand
 from gg.file_manager import FileManager
 from gg.blob_manager import BlobManager
 from gg.database import Database
@@ -52,6 +53,12 @@ class GG:
                       self.logger,
                       args.n).execute()
 
+    def _merge(self, _: argparse.Namespace) -> None:
+        MergeCommand(self.database,
+                     self.file_manager,
+                     self.blob_manager,
+                     self.logger).execute()
+
     def _config(self, args: argparse.Namespace) -> None:
         ConfigCommand(self.database,
                       self.file_manager,
@@ -68,6 +75,7 @@ class GG:
             "commit": self._commit,
             "config": self._config,
             "switch": self._switch,
+            "merge": self._merge,
         }
 
         commands[args.command](args)
@@ -115,6 +123,9 @@ class GG:
                             help="sprint name",
                             required=True)
         self.add_generic_arguments(switch)
+
+        merge = subparsers.add_parser("merge", help="Merge sprint")
+        self.add_generic_arguments(merge)
 
         config = subparsers.add_parser("config", help="Change Config Values")
         config.add_argument("--key",

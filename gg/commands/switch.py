@@ -1,3 +1,5 @@
+from typing import Set
+
 from gg.base import CommandBase
 from gg.database import Database
 from gg.file_manager import FileManager
@@ -39,7 +41,7 @@ class SwitchCommand(CommandBase):
             self.logger.pulse("Writing sprint blobs")
 
             commit = self.database.get_commit(sprint.last_commit_id)
-            written_blobs = set()
+            written_blobs: Set[str] = set()
 
             while True:
                 if not commit:
@@ -51,25 +53,29 @@ class SwitchCommand(CommandBase):
                 for commit_blob in commit_blobs:
                     self.logger.pulse(f"Writing {commit_blob} blob")
 
-                    if commit_blob.blob_id in written_blobs:
+                    if commit_blob.path in written_blobs:
                         continue
 
-                    blob = self.database.get_blob(blob_id=commit_blob.blob_id)
-                    if blob:
-                        path = self.file_manager.get_absolute_path(
-                            commit_blob.path)
+                    if commit_blob.blob_id:
+                        blob = self.database.get_blob(
+                            blob_id=commit_blob.blob_id)
 
-                        self.file_manager.create_all_folders(path)
+                        if blob:
+                            path = self.file_manager.get_absolute_path(
+                                commit_blob.path)
 
-                        with open(path, "w") as f:
-                            c = self.file_manager.decompress_blob(blob.content)
-                            f.write(c)
+                            self.file_manager.create_all_folders(path)
 
-                            written_blobs.add(commit_blob.blob_id)
+                            with open(path, "w") as f:
+                                c = self.file_manager.decompress_blob(
+                                    blob.content)
+                                f.write(c)
+
+                                written_blobs.add(commit_blob.path)
 
                 commit = self.database.get_commit(commit.parent_commit_id)
 
             self.logger.pulse("Wrote sprint blobs")
         else:
             self.logger.info("Sprint is not found")
-        self.logger.info(f"Switched to  sprint {self.sprint_name}")
+        self.logger.info(f"Switched to sprint {self.sprint_name}")
