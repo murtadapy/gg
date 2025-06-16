@@ -47,8 +47,12 @@ class CommitCommand(CommandBase):
                 blob_status = self.blob_manager.get_blobs_status()
                 self.logger.pulse("Got blobs status")
 
-                self.logger.pulse("Creating all blobs")
+                self.logger.pulse("Checking changes")
+                if not len(blob_status):
+                    self.logger.info("No Changes to commit")
+                    return None
 
+                self.logger.pulse("Creating all blobs")
                 files_blob_link = {}
                 for file in blob_status.created + blob_status.modified:
                     self.logger.pulse(f"Creating {file} blob")
@@ -89,3 +93,9 @@ class CommitCommand(CommandBase):
                 self.database.update_sprint(sprint_name=sprint.name,
                                             last_commit_id=commit_id)
                 self.logger.pulse("Updated sprint last commit id")
+
+                if len(blob_status) > 1:
+                    self.logger.info(f"{len(blob_status)} changes have been "
+                                     "committed successfully")
+                else:
+                    self.logger.info("1 change has been comitted successfully")

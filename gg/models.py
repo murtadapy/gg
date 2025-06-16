@@ -43,3 +43,8 @@ class BlobStatus:
     modified: List[str] = field(default_factory=list)
     deleted: List[str] = field(default_factory=list)
     unchanged: List[str] = field(default_factory=list)
+
+    def __len__(self) -> int:
+        return len(self.created +
+                   self.modified +
+                   self.deleted)

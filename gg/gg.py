@@ -95,6 +95,12 @@ class GG:
         commit = subparsers.add_parser("commit", help="Commit changes")
         self.add_generic_arguments(commit)
 
+        sprint = subparsers.add_parser("sprint", help="Create a new sprint")
+        sprint.add_argument("-n",
+                            help="Sprint name",
+                            required=True)
+        self.add_generic_arguments(sprint)
+
         config = subparsers.add_parser("config", help="Change Config Values")
         config.add_argument("--key",
                             help="Config Key",

@@ -20,4 +20,21 @@ class SprintCommand(CommandBase):
         self.sprint_name = sprint_name
 
     def execute(self) -> None:
-        ...
+        self.logger.pulse("Executing Sprint command")
+
+        self.logger.pulse("Get current sprint")
+        sprint_name = self.database.get_value("CURRENT_SPRINT")
+        sprint = self.database.get_sprint(sprint_name=sprint_name)
+        self.logger.pulse("Got the current sprint")
+
+        if sprint:
+            self.logger.pulse(f"Creating {self.sprint_name} sprint")
+            self.database.create_sprint(sprint_name=self.sprint_name,
+                                        base_commit_id=sprint.last_commit_id)
+            self.logger.pulse(f"Created {self.sprint_name} sprint")
+
+            self.logger.pulse(f"Switching to the {self.sprint_name} sprint")
+            self.database.update_value("CURRENT_SPRINT", self.sprint_name)
+            self.logger.pulse(f"Switched to the {self.sprint_name} sprint")
+
+        self.logger.info(f"Switched to {self.sprint_name}")
