@@ -1,4 +1,4 @@
-# GG (Good to GIT)
+# GG (Go to GIT)
 
 **GG** is a minimal lightweight Git-inspired version control system built from scratch in Python. It supports core Git functionalties like committing, branching, merging, switching, and configuration.
 
