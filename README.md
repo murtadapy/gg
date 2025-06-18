@@ -2,8 +2,7 @@
 
 **GG** is a minimal lightweight Git-inspired version control system built from scratch in Python. It supports core Git functionalities like committing, branching, merging, switching, and configuration.
 
-![Peek 2025-06-16 20-20](https://github.com/user-attachments/assets/20441c9c-a697-456a-95f5-f17f7110d9c9)
-
+![icon](https://github.com/user-attachments/assets/50c1db19-a466-4c2e-a42c-ddf28a954a6e)
 
 ## ⚠️ Disclaimer
 
@@ -91,3 +90,6 @@ $ gg commit
 $ gg merge
 Merged new-feature to main
 ```
+
+![Peek 2025-06-16 20-20](https://github.com/user-attachments/assets/20441c9c-a697-456a-95f5-f17f7110d9c9)
+
